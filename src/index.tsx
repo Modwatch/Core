@@ -1,83 +1,76 @@
-// import "preact/debug"; ///DEV_ONLY
-import { render, h, Component } from "preact";
-import { Link } from "preact-router";
-import { Provider, connect } from "unistore/preact";
-import "unfetch/polyfill/index"; ///NOMODULE_ONLY
+import { h, Component, render } from "preact";
+
+import { modlists, modlist } from "./__helpers__/mocks";
+
+import ModwatchFile from "./components/modwatch-file";
+import ModwatchModlists from "./components/modwatch-modlists";
+import ModwatchNav from "./components/modwatch-nav";
+import { ModwatchNotifications } from "./components/modwatch-notifications";
 
 import "./global.css";
+import "./components/modwatch-file.css";
+import "./components/modwatch-nav.css";
+import "./components/modwatch-modlists.css";
+import "./components/modwatch-notifications.css";
 
-import Router from "./router";
-import { rawState, store, actions } from "./store";
-import { verify } from "./store/pure";
+import * as types from "@modwatch/types";
 
-import Nav from "./components/modwatch-nav";
-import Notifications from "./components/modwatch-notifications";
-
-import { StoreProps } from "./types";
-
-import "./ga"; ///PROD_ONLY
-
-console.log(`Modwatch:
-VERSION:\t${process.env.VERSION}
-NODE_ENV:\t${process.env.NODE_ENV}`);
-
-const pathname = window.location.pathname;
-
-const token = (() => {
-  if (pathname.indexOf("/oauth/access_token/") === 0) {
-    history.replaceState(null, null, "/");
-    try {
-      const [, , , token, , token_type, , expires_in] = pathname.split("/");
-      return token;
-    } catch (e) {
-      return "401";
-    }
+class Root extends Component<{}, {
+  notifications: types.Notification[]
+}> {
+  state = {
+    notifications: []
   }
-  return undefined;
-})();
-
-class Root extends Component<StoreProps & { token: string }, {}> {
-  componentDidMount = async () => {
-    if (!this.props.token && this.props.user && this.props.user.authenticated) {
-      setTimeout(
-        () =>
-          this.props.addNotification(
-            `Welcome Back, ${this.props.user.username}`
-          ),
-        1
-      );
-    } else if (this.props.token === "401" || !(await verify(token))) {
-      if (!this.props.user || !this.props.user.authenticated) {
-        return;
-      }
-      this.props.logout();
-      setTimeout(
-        () =>
-          this.props.addNotification("Login Failed", {
-            type: "error"
-          }),
-        1
-      );
-    } else {
-      this.props.login(token);
-      setTimeout(() => this.props.addNotification("Login Successful"), 1);
-    }
-  };
+  pushNotification = () => {
+    this.setState(({ notifications }) => ({
+      notifications: notifications.concat({
+        message: "A notification!",
+        _id: `${new Date().getTime()}`
+      })
+    }));
+  }
+  removeNotifications = () => {
+    this.setState(({ notifications }) => ({
+      notifications: notifications.slice(1)
+    }));
+  }
   render() {
     return (
       <div>
-        <Notifications {...this.props} />
+        <ModwatchNotifications
+          notifications={this.state.notifications}
+          removeNotification={this.removeNotifications}
+        />
         <header>
           <h1 class="header">
-            <Link class="no-underline" href="/">
+            <a class="no-underline" href="/">
               MODWATCH
-            </Link>
+            </a>
           </h1>
         </header>
-        <Nav {...this.props} />
+        <ModwatchNav>
+          <span class="nav-block" onClick={e => console.log("Home")}>Home</span>
+          <span class="nav-block" onClick={e => console.log("Modlists")}>Modlists</span>
+          <span class="nav-block" onClick={e => console.log("Profile")}>Profile</span>
+        </ModwatchNav>
         <div class="content-wrapper">
           <div class="view-wrapper">
-            <Router {...this.props} />
+            <section>
+              <h2>This is a component library for Modwatch</h2>
+              <p>
+                These components can be shared betweenany modwatch-related apps. Notifications, modwatch file view, corner nav, etc.
+                To test notifications, you can <a onClick={this.pushNotification}>click here</a> to push a new one.
+                They should disappear after a few seconds, or on click.
+              </p>
+            </section>
+            <section>
+              <h2>Example Modwatch List</h2>
+              <ModwatchModlists getModlists={async () => await modlists} searchModlists={async () => await modlists} Link={({ children }) => <a>{children}</a>} />
+            </section>
+            <section>
+              <h2>Example Modlist</h2>
+              <ModwatchFile lines={modlist.modlist} filetype="modlist" complexLines={false} showDescriptor={true} filter="" showInactiveMods={true}/>
+            </section>
           </div>
         </div>
       </div>
@@ -85,17 +78,4 @@ class Root extends Component<StoreProps & { token: string }, {}> {
   }
 }
 
-const Connector = connect(
-  Object.keys(rawState),
-  actions
-)(props => (
-  //@ts-ignore I don't know how to pass types to connect
-  <Root {...props} token={token} />
-));
-
-render(
-  <Provider store={store}>
-    <Connector />
-  </Provider>,
-  document.getElementById("modwatch-app")
-);
+render(<Root />, document.getElementById("modwatch-app"));

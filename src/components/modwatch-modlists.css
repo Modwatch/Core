@@ -1,0 +1,11 @@
+.modlist-table {
+  width: 100%;
+  text-align: left;
+  & th {
+    border-bottom: 1px solid;
+    padding: 3px;
+  }
+  & td {
+    padding: 3px;
+  }
+}

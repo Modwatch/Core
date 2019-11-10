@@ -26,7 +26,7 @@
 }
 .nav-block {
   position: relative;
-  width: calc(0.5 * var(--nav-scale));
+  /* width: calc(0.5 * var(--nav-scale)); */
   padding: calc(0.1 * var(--nav-scale));
   color: var(--color-icon);
   outline: none;

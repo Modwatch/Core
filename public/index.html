@@ -9,7 +9,7 @@
     <link rel="icon" href="/images/modwatch.ico" />
     <link rel="icon" type="image/png" href="/images/modwatch_144.png" />
     <title>Modwat.ch</title>
-    <link rel="stylesheet" type="text/css" href="/dist/module/index.css" />
+    <link rel="stylesheet" type="text/css" href="/dist/index.css" />
   </head>
   <body style="min-height:1000px">
     <div id="modwatch-app">
@@ -37,15 +37,6 @@
         </div>
       </noscript>
     </div>
-    <script nomodule>
-      window.Promise || document.write("<script src=\"https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.auto.min.js\"><\/script>");
-    </script>
-    <script type="module" src="/dist/module/index.js"></script>
-    <script type="text/javascript" nomodule src="/dist/nomodule/index.js"></script>
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/serviceworker.js");
-      }
-    </script>
+    <script type="module" src="/dist/index.js"></script>
   </body>
 </html>

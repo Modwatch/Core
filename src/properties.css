@@ -1,3 +1,4 @@
+/* generated */
 :root {
   --menu-offset: 20px;
   --button-offset: 10px;
@@ -19,8 +20,7 @@
   --color-error: #e45649;
   --color-comment: rgba(0, 0, 0, 0.5);
   --color-section: #4078f2;
-  /* --color-links: #4078f2; */
-  --color-links: var(--color-primary);
+  --color-links: #d58717;
   --nav-scale: 100px;
   --z-index-nav: 11;
   --z-index-nav-toggle: 10;

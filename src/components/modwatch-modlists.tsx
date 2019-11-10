@@ -1,33 +1,29 @@
 import { h, Component } from "preact";
-import { Link } from "preact-router";
 
-import { searchModlists, getModlists } from "../store/pure";
+import { Modlist } from "@modwatch/types";
 
-import { PartialModlist } from "../types";
-
-const styles = {
-  th: {
-    borderBottom: "1px solid",
-    padding: "3px"
-  },
-  td: {
-    padding: "3px"
-  },
-  modlistTable: { width: "100%", textAlign: "left" }
+type PrettyModlist = Partial<Modlist> & {
+  encodedUsername: string;
+  displayTimestamp: string;
 };
+type State = {
+  modlists: PrettyModlist[];
+  gameMap: {
+    [key: string]: string;
+  };
+  debounceFilter?: number;
+  filter: string;
+}
 
 export default class ModwatchModlists extends Component<
-  {},
   {
-    modlists: PartialModlist[];
-    gameMap: {
-      [key: string]: string;
-    };
-    debounceFilter?: number;
-    filter: string;
-  }
+    getModlists(): Promise<Partial<Modlist>[]>,
+    searchModlists({ filter: string }): Promise<Partial<Modlist>[]>,
+    Link: any
+  },
+  State
 > {
-  state = {
+  state: State = {
     modlists: [],
     gameMap: {
       skyrim: "Skyrim Classic",
@@ -38,24 +34,24 @@ export default class ModwatchModlists extends Component<
     filter: ""
   };
   componentDidMount = async () => {
-    const modlists = await getModlists();
+    const modlists = await this.props.getModlists();
     this.setState(() => ({
       modlists: prettifyModlists(modlists)
     }));
   };
-  search = (value = "", debounce = 150) => {
+  search = (filter = "", debounce = 150) => {
     clearTimeout(this.state.debounceFilter);
     this.setState(() => ({
-      filter: value,
+      filter,
       debounceFilter: window.setTimeout(async () => {
-        if (value === "") {
-          const modlists = await getModlists();
+        if (filter === "") {
+          const modlists = await this.props.getModlists();
           this.setState(() => ({
             modlists: prettifyModlists(modlists)
           }));
           return;
         }
-        const modlists = await searchModlists({ filter: value });
+        const modlists = await this.props.searchModlists({ filter });
         this.setState(() => ({
           modlists: prettifyModlists(modlists)
         }));
@@ -86,12 +82,12 @@ export default class ModwatchModlists extends Component<
             Clear
           </button>
         </form>
-        <table style={styles.modlistTable}>
+        <table class="modlist-table">
           <thead>
             <tr>
-              <th style={styles.th}>Username</th>
-              <th style={styles.th}>Game</th>
-              <th style={styles.th} class="responsive-hide">
+              <th>Username</th>
+              <th>Game</th>
+              <th class="responsive-hide">
                 Timestamp
               </th>
             </tr>
@@ -101,15 +97,14 @@ export default class ModwatchModlists extends Component<
               username,
               encodedUsername,
               game,
-              displayTimestamp,
-              timestampTitle
+              displayTimestamp
             }) => (
               <tr>
-                <td style={styles.td}>
-                  <Link href={`/u/${encodedUsername}`}>{username}</Link>
+                <td>
+                  <this.props.Link href={`/u/${encodedUsername}`}>{username}</this.props.Link>
                 </td>
-                <td style={styles.td}>{this.state.gameMap[game]}</td>
-                <td style={styles.td} class="responsive-hide">
+                <td>{this.state.gameMap[game]}</td>
+                <td class="responsive-hide">
                   {displayTimestamp}
                 </td>
               </tr>
@@ -121,7 +116,7 @@ export default class ModwatchModlists extends Component<
   }
 }
 
-function prettifyModlists(modlists: PartialModlist[]): PartialModlist[] {
+function prettifyModlists(modlists: Partial<Modlist>[]): PrettyModlist[] {
   let t;
   return modlists.map(
     m => (

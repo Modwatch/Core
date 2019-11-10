@@ -1,0 +1,52 @@
+/* Notification */
+.notifications-wrapper {
+  font-family: monospace;
+  font-size: 16px;
+  list-style: none;
+  margin: 0;
+  position: fixed;
+  top: 20px;
+  left: 15px;
+  width: 200px;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  & .notification {
+    position: relative;
+    padding: 7px 10px;
+    margin: 5px 0;
+    opacity: 1;
+    transition: opacity var(--anim-delay) ease;
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    &.error: {
+      border-color: var(--color-error);
+      color: var(--color-error);
+    }
+    &.removing {
+      opacity: 0.01;
+    },
+    &.soft-delete {
+      display: none;
+      z-index: -1;
+    }
+    &:before,
+    &:after {
+      content: "";
+      width: 10px;
+      position: absolute;
+      top: 0;
+      height: 100%;
+      border-top: 3px solid var(--color-primary);;
+      border-bottom: 3px solid var(--color-primary);;
+      box-sizing: border-box;
+    }
+    &:before {
+      left: 0;
+      border-left: 3px solid;
+    }
+    &:after {
+      right: 0;
+      border-right: 3px solid;
+    }
+  }
+}
