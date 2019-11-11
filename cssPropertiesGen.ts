@@ -1,7 +1,7 @@
 import { writeFile } from "fs";
 import { join } from "path";
 import { promisify } from "util";
-import * as properties from "./src/properties.css";
+import * as properties from "./src/properties-css";
 
 const [writeFileAsync] = [writeFile].map(promisify);
 
