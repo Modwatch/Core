@@ -26,16 +26,20 @@ export const modlist = {
     "SGEyebrows.esp",
     "UHDAP - MusicHQ.esp",
     "FISS.esp",
-    "MajesticMountains_Landscape.esm"
+    "MajesticMountains_Landscape.esm",
+    "CreationClub.esl"
   ],
   modlist: [
-    "Aspen Bark Patch",
-    "UNP Armor Mashup Compilation Opt-SSE",
-    "UNP Armor Mashup BSA version SSE Ported",
-    "The Lily Armor Mashup- UNP - Main File",
-    "The Elder Scrolls - Veydosebrom",
-    "Simply Faster Arrows and Bolts",
-    "Simply Bigger Trees SE (Realistic Aspen Trees - Loose)",
+    "+Optimized HearthFires Textures - SD",
+    "+Optimized Dragonborn Textures - SD",
+    "+Optimized Dawnguard Textures - SD",
+    "+Optimized Vanilla Textures - SD",
+    "-Crash fixes",
+    "+skse 1 07 03",
+    "+NobleSkyrimMod HD-2K",
+    "+Enhanced Vanilla Trees",
+    "+Better Dialogue Controls",
+    "-Natural Lighting Vivid Atmospherics"
   ],
   ini: [
     "[Actor]",
@@ -64,4 +68,4 @@ export const modlist = {
     "ini",
     "prefsini"
   ]
-}
+};

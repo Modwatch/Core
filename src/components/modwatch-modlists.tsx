@@ -19,7 +19,7 @@ export default class ModwatchModlists extends Component<
   {
     getModlists(): Promise<Partial<Modlist>[]>,
     searchModlists({ filter: string }): Promise<Partial<Modlist>[]>,
-    Link: any
+    Link: preact.ComponentType<{ href: string, [key: string]: any }>
   },
   State
 > {

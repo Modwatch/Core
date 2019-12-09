@@ -1,25 +1,31 @@
 {
   "name": "@modwatch/core",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.7.0",
   "scripts": {
     "prebuild": "rimraf public/dist/*",
     "build": "rollup -c --environment NODE_ENV:production",
     "watch": "rollup -cw --environment NODE_ENV:development,API_ENV:production",
     "serve": "serve public",
     "test": "sucrase-node node_modules/tape/bin/tape ./tests/**/*.ts | tap-min",
-    "test:watch": "watch 'npm run tape' src tests -du",
+    "test:watch": "watch 'npm run test' src tests -du",
     "tsc": "tsc --noEmit",
     "loadz0r": "node loadz0r/supermin.js",
     "cssProperties": "sucrase-node cssPropertiesGen.ts",
     "micro": "sucrase-node ./node_modules/micro-dev/bin/micro-dev ./micro.ts -p 3001",
     "prettier": "prettier --write 'src/**/*.{js,jsx,css,ts,tsx}'",
-    "postinstall": "run-p loadz0r cssProperties"
+    "prepublish": "run-p loadz0r cssProperties"
   },
   "precommit": [
     "test",
     "prettier",
     "build"
+  ],
+  "files": [
+    "src",
+    "loadz0r",
+    "!loadz0r/supermin.js",
+    "!loadz0r/loader.js",
+    "README.md"
   ],
   "main": "micro.js",
   "dependencies": {
@@ -55,12 +61,8 @@
     "tap-min": "^2.0.0",
     "tape": "^4.11.0",
     "tape-watch": "^2.3.0",
+    "tslib": "^1.10.0",
     "typescript": "^3.6.4",
     "watch": "^1.0.2"
-  },
-  "subdomain": "skyrimmodwatcher",
-  "domains": [
-    "modwat.ch",
-    "www.modwat.ch"
-  ]
+  }
 }

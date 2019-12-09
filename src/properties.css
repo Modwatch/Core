@@ -7,8 +7,10 @@
   --icon-subsize: 30px;
   --color-primary: #d58717;
   --color-icon: #000000;
+  --color-text: #000000;
+  --color-text-header: #d0d0d0;
   --color-border: #a5a5a5;
-  --color-background: #d0d0d0aa;
+  --color-background: #333333;
   --color-background-2: #d3d3d3;
   --color-esm: rgba(140, 140, 0, 0.35);
   --color-esp: rgba(0, 140, 0, 0.25);

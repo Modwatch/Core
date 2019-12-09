@@ -2,7 +2,7 @@ import { h, Component } from "preact";
 
 import "./modwatch-file.css";
 
-import { Line } from "../types";
+import { Line } from "@modwatch/types";
 
 export default class ModwatchFile extends Component<{
   lines: string[];

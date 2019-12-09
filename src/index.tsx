@@ -2,16 +2,19 @@ import { h, Component, render } from "preact";
 
 import { modlists, modlist } from "./__helpers__/mocks";
 
+import "./global.css";
+
+import "./components/modwatch-file.css";
 import ModwatchFile from "./components/modwatch-file";
+import "./components/modwatch-modlists.css";
 import ModwatchModlists from "./components/modwatch-modlists";
+import "./components/modwatch-nav.css";
 import ModwatchNav from "./components/modwatch-nav";
+import "./components/modwatch-notifications.css";
 import { ModwatchNotifications } from "./components/modwatch-notifications";
 
-import "./global.css";
-import "./components/modwatch-file.css";
-import "./components/modwatch-nav.css";
-import "./components/modwatch-modlists.css";
-import "./components/modwatch-notifications.css";
+import { addNotification, removeNotification } from "./store/index";
+
 
 import * as types from "@modwatch/types";
 
@@ -21,25 +24,20 @@ class Root extends Component<{}, {
   state = {
     notifications: []
   }
-  pushNotification = () => {
-    this.setState(({ notifications }) => ({
-      notifications: notifications.concat({
-        message: "A notification!",
-        _id: `${new Date().getTime()}`
-      })
-    }));
+  notify = message => {
+    this.setState(state =>
+      addNotification(state, message)
+    );
   }
-  removeNotifications = () => {
-    this.setState(({ notifications }) => ({
-      notifications: notifications.slice(1)
-    }));
+  removeNotification = _id => {
+    this.setState(state => removeNotification(state, _id));
   }
   render() {
     return (
       <div>
         <ModwatchNotifications
           notifications={this.state.notifications}
-          removeNotification={this.removeNotifications}
+          removeNotification={this.removeNotification}
         />
         <header>
           <h1 class="header">
@@ -49,27 +47,41 @@ class Root extends Component<{}, {
           </h1>
         </header>
         <ModwatchNav>
-          <span class="nav-block" onClick={e => console.log("Home")}>Home</span>
-          <span class="nav-block" onClick={e => console.log("Modlists")}>Modlists</span>
-          <span class="nav-block" onClick={e => console.log("Profile")}>Profile</span>
+          <span class="nav-block" onClick={e => this.notify("Home")}>Home</span>
+          <span class="nav-block" onClick={e => this.notify("Modlists")}>Modlists</span>
+          <span class="nav-block" onClick={e => this.notify("Profile")}>Profile</span>
         </ModwatchNav>
         <div class="content-wrapper">
           <div class="view-wrapper">
             <section>
               <h2>This is a component library for Modwatch</h2>
               <p>
-                These components can be shared betweenany modwatch-related apps. Notifications, modwatch file view, corner nav, etc.
-                To test notifications, you can <a onClick={this.pushNotification}>click here</a> to push a new one.
+                These components can be shared between any modwatch-related apps. Notifications, modwatch file view, corner nav, etc.
+                To test notifications, you can <a onClick={e => this.notify("A message!")}>click here</a> to push a new one.
                 They should disappear after a few seconds, or on click.
               </p>
             </section>
             <section>
               <h2>Example Modwatch List</h2>
-              <ModwatchModlists getModlists={async () => await modlists} searchModlists={async () => await modlists} Link={({ children }) => <a>{children}</a>} />
+              <ModwatchModlists
+                getModlists={async () => await modlists}
+                searchModlists={async () => await modlists}
+                Link={({ children, href }) => <a onClick={e => this.notify(href)}>{children}</a>}
+              />
             </section>
             <section>
               <h2>Example Modlist</h2>
-              <ModwatchFile lines={modlist.modlist} filetype="modlist" complexLines={false} showDescriptor={true} filter="" showInactiveMods={true}/>
+              {["plugins", "modlist", "ini", "prefsini"].map(filetype => <div>
+                <h3>{filetype}</h3>
+                <ModwatchFile
+                  lines={modlist[filetype]}
+                  filetype={filetype}
+                  complexLines={filetype.includes("ini")}
+                  showDescriptor={filetype === "plugins"}
+                  filter=""
+                  showInactiveMods={true}
+                />
+              </div>)}
             </section>
           </div>
         </div>

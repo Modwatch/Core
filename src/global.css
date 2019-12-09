@@ -1,9 +1,12 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
 body {
   font-family: "Muli", Helvetica-Neue, sans-serif;
-  color: #000000;
+  color: var(--color-text);
   text-align: center;
-  background: #333333;
-  background-image: url("/images/congruent_outline.svg");
+  background: var(--color-background);
+  background-image: url("background.svg");
   margin: 0;
 }
 .vert-margin {
@@ -70,17 +73,17 @@ h2 {
 
 .header {
   font-weight: bold;
-  color: #d0d0d0;
+  color: var(--color-text-header);
   margin-top: 20px;
   & a {
-    color: #d0d0d0;
+    color: var(--color-text-header);
     font-size: 9vw;
     text-decoration: none;
     max-width: 1000px;
   }
 }
 /* FORMS */
-input[type="text"] {
+input[type="text"], input[type="password"] {
   background: none;
   outline: none;
   border: none;
