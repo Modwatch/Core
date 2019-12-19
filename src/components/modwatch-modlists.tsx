@@ -13,13 +13,13 @@ type State = {
   };
   debounceFilter?: number;
   filter: string;
-}
+};
 
 export default class ModwatchModlists extends Component<
   {
-    getModlists(): Promise<Partial<Modlist>[]>,
-    searchModlists({ filter: string }): Promise<Partial<Modlist>[]>,
-    Link: preact.ComponentType<{ href: string, [key: string]: any }>
+    getModlists(): Promise<Partial<Modlist>[]>;
+    searchModlists({ filter: string }): Promise<Partial<Modlist>[]>;
+    Link: preact.ComponentType<{ href: string; [key: string]: any }>;
   },
   State
 > {
@@ -87,26 +87,19 @@ export default class ModwatchModlists extends Component<
             <tr>
               <th>Username</th>
               <th>Game</th>
-              <th class="responsive-hide">
-                Timestamp
-              </th>
+              <th class="responsive-hide">Timestamp</th>
             </tr>
           </thead>
           {this.state.modlists.map(
-            ({
-              username,
-              encodedUsername,
-              game,
-              displayTimestamp
-            }) => (
+            ({ username, encodedUsername, game, displayTimestamp }) => (
               <tr>
                 <td>
-                  <this.props.Link href={`/u/${encodedUsername}`}>{username}</this.props.Link>
+                  <this.props.Link href={`/u/${encodedUsername}`}>
+                    {username}
+                  </this.props.Link>
                 </td>
                 <td>{this.state.gameMap[game]}</td>
-                <td class="responsive-hide">
-                  {displayTimestamp}
-                </td>
+                <td class="responsive-hide">{displayTimestamp}</td>
               </tr>
             )
           )}

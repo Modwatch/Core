@@ -15,23 +15,23 @@ import { ModwatchNotifications } from "./components/modwatch-notifications";
 
 import { addNotification, removeNotification } from "./store/index";
 
-
 import * as types from "@modwatch/types";
 
-class Root extends Component<{}, {
-  notifications: types.Notification[]
-}> {
+class Root extends Component<
+  {},
+  {
+    notifications: types.Notification[];
+  }
+> {
   state = {
     notifications: []
-  }
+  };
   notify = message => {
-    this.setState(state =>
-      addNotification(state, message)
-    );
-  }
+    this.setState(state => addNotification(state, message));
+  };
   removeNotification = _id => {
     this.setState(state => removeNotification(state, _id));
-  }
+  };
   render() {
     return (
       <div>
@@ -47,18 +47,27 @@ class Root extends Component<{}, {
           </h1>
         </header>
         <ModwatchNav>
-          <span class="nav-block" onClick={e => this.notify("Home")}>Home</span>
-          <span class="nav-block" onClick={e => this.notify("Modlists")}>Modlists</span>
-          <span class="nav-block" onClick={e => this.notify("Profile")}>Profile</span>
+          <span class="nav-block" onClick={e => this.notify("Home")}>
+            Home
+          </span>
+          <span class="nav-block" onClick={e => this.notify("Modlists")}>
+            Modlists
+          </span>
+          <span class="nav-block" onClick={e => this.notify("Profile")}>
+            Profile
+          </span>
         </ModwatchNav>
         <div class="content-wrapper">
           <div class="view-wrapper">
             <section>
               <h2>This is a component library for Modwatch</h2>
               <p>
-                These components can be shared between any modwatch-related apps. Notifications, modwatch file view, corner nav, etc.
-                To test notifications, you can <a onClick={e => this.notify("A message!")}>click here</a> to push a new one.
-                They should disappear after a few seconds, or on click.
+                These components can be shared between any modwatch-related
+                apps. Notifications, modwatch file view, corner nav, etc. To
+                test notifications, you can{" "}
+                <a onClick={e => this.notify("A message!")}>click here</a> to
+                push a new one. They should disappear after a few seconds, or on
+                click.
               </p>
             </section>
             <section>
@@ -66,22 +75,26 @@ class Root extends Component<{}, {
               <ModwatchModlists
                 getModlists={async () => await modlists}
                 searchModlists={async () => await modlists}
-                Link={({ children, href }) => <a onClick={e => this.notify(href)}>{children}</a>}
+                Link={({ children, href }) => (
+                  <a onClick={e => this.notify(href)}>{children}</a>
+                )}
               />
             </section>
             <section>
               <h2>Example Modlist</h2>
-              {["plugins", "modlist", "ini", "prefsini"].map(filetype => <div>
-                <h3>{filetype}</h3>
-                <ModwatchFile
-                  lines={modlist[filetype]}
-                  filetype={filetype}
-                  complexLines={filetype.includes("ini")}
-                  showDescriptor={filetype === "plugins"}
-                  filter=""
-                  showInactiveMods={true}
-                />
-              </div>)}
+              {["plugins", "modlist", "ini", "prefsini"].map(filetype => (
+                <div>
+                  <h3>{filetype}</h3>
+                  <ModwatchFile
+                    lines={modlist[filetype]}
+                    filetype={filetype}
+                    complexLines={filetype.includes("ini")}
+                    showDescriptor={filetype === "plugins"}
+                    filter=""
+                    showInactiveMods={true}
+                  />
+                </div>
+              ))}
             </section>
           </div>
         </div>

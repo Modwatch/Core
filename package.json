@@ -1,6 +1,6 @@
 {
   "name": "@modwatch/core",
-  "version": "0.7.0",
+  "version": "0.1.0",
   "scripts": {
     "prebuild": "rimraf public/dist/*",
     "build": "rollup -c --environment NODE_ENV:production",
@@ -16,7 +16,6 @@
     "prepublish": "run-p loadz0r cssProperties"
   },
   "precommit": [
-    "test",
     "prettier",
     "build"
   ],
@@ -45,6 +44,7 @@
     "npm-run-all": "^4.1.5",
     "postcss-custom-properties": "^9.0.2",
     "postcss-nesting": "^7.0.1",
+    "postcss-url": "^8.0.0",
     "pre-commit": "^1.2.2",
     "prettier": "^1.18.2",
     "proxyquire": "^2.1.3",

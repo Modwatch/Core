@@ -4,6 +4,7 @@ import { promisify } from "util";
 import postcss from "rollup-plugin-postcss";
 import postcssNesting from "postcss-nesting";
 import postcssCustomProperties from "postcss-custom-properties";
+import postcssURL from "postcss-url";
 import nodeResolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import replace from "rollup-plugin-re";
@@ -82,6 +83,9 @@ export default async () => ({
         postcssCustomProperties({
           importFrom: "./src/properties.css",
           preserve: false
+        }),
+        postcssURL({
+          url: "inline"
         })
       ].concat(env.NODE_ENV !== "production" ? [] : [require("cssnano")()])
     })

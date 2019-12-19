@@ -24,7 +24,8 @@
     }
     &.removing {
       opacity: 0.01;
-    },
+    }
+    ,
     &.soft-delete {
       display: none;
       z-index: -1;
@@ -36,8 +37,8 @@
       position: absolute;
       top: 0;
       height: 100%;
-      border-top: 3px solid var(--color-primary);;
-      border-bottom: 3px solid var(--color-primary);;
+      border-top: 3px solid var(--color-primary);
+      border-bottom: 3px solid var(--color-primary);
       box-sizing: border-box;
     }
     &:before {

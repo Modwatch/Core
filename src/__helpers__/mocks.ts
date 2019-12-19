@@ -1,18 +1,22 @@
 import { Modlist } from "@modwatch/types";
 
-export const modlists: Partial<Modlist>[] = [{
-  username: "Peanut",
-  game: "skyrim",
-  timestamp: new Date("1/1/2019")
-}, {
-  username: "Thallasa",
-  game: "fallout4",
-  timestamp: new Date("2/1/2019")
-}, {
-  username: "Trainwiz",
-  game: "skyrimse",
-  timestamp: new Date("2/2/2019")
-}];
+export const modlists: Partial<Modlist>[] = [
+  {
+    username: "Peanut",
+    game: "skyrim",
+    timestamp: new Date("1/1/2019")
+  },
+  {
+    username: "Thallasa",
+    game: "fallout4",
+    timestamp: new Date("2/1/2019")
+  },
+  {
+    username: "Trainwiz",
+    game: "skyrimse",
+    timestamp: new Date("2/2/2019")
+  }
+];
 
 export const modlist = {
   ...modlists[0],
@@ -48,7 +52,7 @@ export const modlist = {
     "fMaxFrameCounterDifferenceToConsiderVisible=0.06666667",
     "[Archive]",
     "bLoadArchiveInMemory=1",
-    "sArchiveToLoadInMemoryList=Skyrim - Animations.bsa",
+    "sArchiveToLoadInMemoryList=Skyrim - Animations.bsa"
   ],
   prefsini: [
     "[AudioMenu]",
@@ -62,10 +66,5 @@ export const modlist = {
     "fVal6=0.7500",
     "fVal7=0.5500"
   ],
-  files: [
-    "plugins",
-    "modlist",
-    "ini",
-    "prefsini"
-  ]
+  files: ["plugins", "modlist", "ini", "prefsini"]
 };

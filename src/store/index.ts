@@ -1,8 +1,8 @@
 import { Notification } from "@modwatch/types";
 
 type GlobalState = {
-  [key: string]: any,
-  notifications: Notification[]
+  [key: string]: any;
+  notifications: Notification[];
 };
 
 export function addNotification(
@@ -37,7 +37,7 @@ export function removeNotification(state: GlobalState, _id: string) {
     .map(({ softDelete }) => softDelete)
     .indexOf(false);
   if (onlyActiveIndex === 0 && state.notifications[0]._id === _id) {
-    return { 
+    return {
       ...state,
       notifications: []
     };
@@ -55,5 +55,9 @@ export function removeNotification(state: GlobalState, _id: string) {
         .concat(state.notifications.slice(index + 1))
     };
   }
-  throw new Error(`Attempted to removeNotification: ${_id}, which does not exist in [${state.notifications.map(n => n._id).join(",")}]`);
+  throw new Error(
+    `Attempted to removeNotification: ${_id}, which does not exist in [${state.notifications
+      .map(n => n._id)
+      .join(",")}]`
+  );
 }

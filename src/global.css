@@ -1,4 +1,6 @@
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
 }
 body {
@@ -83,7 +85,8 @@ h2 {
   }
 }
 /* FORMS */
-input[type="text"], input[type="password"] {
+input[type="text"],
+input[type="password"] {
   background: none;
   outline: none;
   border: none;

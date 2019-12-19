@@ -64,8 +64,14 @@ export class ModwatchNotification extends Component<
     return (
       <div
         key={notification._id}
-        class={!notification.softDelete ? `notification ${notification.type || "info"}${removing ? " removing" : ""}` : "soft-delete"}
-        style={{transition: `opacity ${notification.removalDelay}ms ease`}}
+        class={
+          !notification.softDelete
+            ? `notification ${notification.type || "info"}${
+                removing ? " removing" : ""
+              }`
+            : "soft-delete"
+        }
+        style={{ transition: `opacity ${notification.removalDelay}ms ease` }}
         onClick={this.removeOnClick}
       >
         {notification.message}
@@ -74,10 +80,13 @@ export class ModwatchNotification extends Component<
   }
 }
 
-export class ModwatchNotifications extends Component<{
-  notifications: types.Notification[],
-  removeNotification(_id: string): void;
-}, {}> {
+export class ModwatchNotifications extends Component<
+  {
+    notifications: types.Notification[];
+    removeNotification(_id: string): void;
+  },
+  {}
+> {
   render() {
     const { notifications, removeNotification } = this.props;
     return (
