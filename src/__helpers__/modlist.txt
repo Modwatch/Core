@@ -1,0 +1,10 @@
++Optimized HearthFires Textures - SD
++Optimized Dragonborn Textures - SD
++Optimized Dawnguard Textures - SD
++Optimized Vanilla Textures - SD
+-Crash fixes
++skse 1 07 03
++NobleSkyrimMod HD-2K
++Enhanced Vanilla Trees
++Better Dialogue Controls
+-Natural Lighting Vivid AtmosphericsS

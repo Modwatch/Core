@@ -1,0 +1,11 @@
+Unofficial Skyrim Special Edition Patch.esp
+RSkyrimChildren.esm
+ETaC - RESOURCES.esm
+Skyrim Project Optimization - Full Version.esm
+ApachiiHair.esm
+Alpine Forest of Whiterun Valley.esp
+SGEyebrows.esp
+UHDAP - MusicHQ.esp
+FISS.esp
+MajesticMountains_Landscape.esm
+CreationClub.esl
