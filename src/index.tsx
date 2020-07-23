@@ -6,7 +6,6 @@ import "./global.css";
 
 import "./components/modwatch-file.css";
 import ModwatchFile from "./components/modwatch-file";
-import "./components/modwatch-modlists.css";
 import ModwatchModlists from "./components/modwatch-modlists";
 import "./components/modwatch-nav.css";
 import ModwatchNav from "./components/modwatch-nav";
