@@ -5,10 +5,10 @@ import postcss from "rollup-plugin-postcss";
 import postcssNesting from "postcss-nesting";
 import postcssCustomProperties from "postcss-custom-properties";
 import postcssURL from "postcss-url";
-import nodeResolve from "rollup-plugin-node-resolve";
-import commonjs from "rollup-plugin-commonjs";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
 import replace from "rollup-plugin-re";
-import sucrase from "rollup-plugin-sucrase";
+import esbuild from "rollup-plugin-esbuild";
 
 const localPkg = require("./package.json");
 
@@ -33,7 +33,6 @@ export default async () => ({
   context: null,
   moduleContext: null,
   treeshake: env.NODE_ENV === "production",
-  experimentalOptimizeChunks: env.NODE_ENV === "production",
   watch: {
     clearScreen: false
   },
@@ -61,14 +60,14 @@ export default async () => ({
     commonjs({
       sourceMap: env.NODE_ENV === "production"
     }),
-    sucrase({
+    esbuild({
       include: ["./src/*/*.ts+(|x)", "./src/**/*.ts+(|x)"],
       exclude: "node_modules/**",
-      transforms: [
-        "jsx",
-        "typescript"
-      ],
-      jsxPragma: "h"
+      watch: process.argv.includes("--watch"),
+      target: env.NOMODULE ? "es2015" : "es2016",
+      jsxFactory: "h",
+      jsxFragment: "Fragment",
+      minify: env.NODE_ENV === "production"
     }),
     postcss({
       include: ["./src/*.css", "./src/**/*.css"],
@@ -92,13 +91,6 @@ export default async () => ({
   ].concat(
     env.NODE_ENV === "production"
       ? [
-          require("rollup-plugin-terser").terser({
-            ecma: 6,
-            compress: true,
-            mangle: true,
-            toplevel: true,
-            sourcemap: true
-          }),
           require("rollup-plugin-visualizer")({
             filename: `./node_modules/.visualizer/index.html`,
             title: `Modwatch Dependency Graph`,

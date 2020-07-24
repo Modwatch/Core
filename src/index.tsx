@@ -73,7 +73,7 @@ class Root extends Component<
               <h2>Example Modwatch List</h2>
               <ModwatchModlists
                 getModlists={async () => await modlists}
-                searchModlists={async () => await modlists}
+                searchModlists={async ({ filter }) => (await modlists).filter(m => m.username.toLowerCase().includes(filter.toLowerCase()))}
                 Link={({ children, href }) => (
                   <a onClick={e => this.notify(href)}>{children}</a>
                 )}
