@@ -1,6 +1,6 @@
 {
   "name": "@modwatch/core",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "scripts": {
     "prebuild": "rimraf public/dist/*",
     "build": "rollup -c --environment NODE_ENV:production",

@@ -10,13 +10,14 @@
   width: 200px;
   border-color: var(--color-primary);
   color: var(--color-primary);
+  z-index: 1;
   & .notification {
     position: relative;
     padding: 7px 10px;
     margin: 5px 0;
     opacity: 1;
     transition: opacity var(--anim-delay) ease;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.6);
     cursor: pointer;
     &.error: {
       border-color: var(--color-error);

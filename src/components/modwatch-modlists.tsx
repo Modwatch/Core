@@ -35,7 +35,7 @@ export default ({
       if (!filter) {
         setModlists(prettifyModlists(await getModlists()));
       } else {
-        setModlists(prettifyModlists(await searchModlists({ filter: filter })));
+        setModlists(prettifyModlists(await searchModlists({ filter })));
       }
     }, 300));
     return () => window.clearTimeout(debounceFilter);
