@@ -21,6 +21,10 @@ import { NotificationProvider, useNotificationContext } from "./context/useNotif
 
 const Root = () => {
   const { addNotification } = useNotificationContext();
+
+  /** @type {[string, string[]][]} */
+  const files = [["plugins", plugins], ["modlist", modlist], ["ini", ini], ["prefsini", prefsini]];
+
   return (
     <div>
       <ModwatchNotifications />
@@ -74,7 +78,7 @@ const Root = () => {
           </section>
           <section>
             <h2>Example Modlist</h2>
-            {[["plugins", plugins], ["modlist", modlist], ["ini", ini], ["prefsini", prefsini]].map(([filetype, lines]) => (
+            {files.map(([filetype, lines]) => (
               <div>
                 <h3>{filetype}</h3>
                 <ModwatchFile

@@ -1,9 +1,12 @@
 {
+  "include": [
+    "src/**/*",
+    "__tests_/**/*"
+  ],
   "compilerOptions": {
     "jsx": "react",
     "jsxFactory": "h",
-    "jsxFactoryFragment": "Fragment",
-    "types": ["preact"],
+    "jsxFragmentFactory": "Fragment",
     "allowJs": true,
     "checkJs": true
   }

@@ -2,7 +2,6 @@
 /** @typedef {import("../types").PrettyModlist} PrettyModlist */
 /** @typedef {import("../types").ModlistsState} State */
 /** @typedef {import("@modwatch/types").Modlist} Modlist */
-/** @typedef {import("preact").ComponentType} ComponentType */
 
 import { h } from "preact";
 import { useState, useRef, useEffect } from "preact/hooks";
@@ -16,10 +15,10 @@ export const defaultDebounceRate = 150;
 
 /**
  * @param {Object} props
- * @param {number} props.debounceRate
+ * @param {number} [props.debounceRate]
  * @param {() => Promise<Partial<Modlist>[]>} props.getModlists
  * @param {({ filter: string }) => Promise<Partial<Modlist>[]>} props.searchModlists
- * @param {ComponentType<{ href: string; [key: string]: any }>} props.Link
+ * @param {any} props.Link
  * @component
  */
 function ModwatchModlists({
@@ -32,7 +31,7 @@ function ModwatchModlists({
   const [filteredModlists, setFilteredModlists] = useState(null);
   const [filter, setFilter] = useState("");
   const debounceFilter = useRef();
-  
+
   useEffect(() => {
     const populateModlist = async () => {
       const modlists = await getModlists();
