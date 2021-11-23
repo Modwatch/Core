@@ -1,70 +1,68 @@
-import { h, Component } from "preact";
+//@ts-check
+/** @typedef {import("@modwatch/types").Line} Line */
 
-import "./modwatch-file.css";
+import { h } from "preact";
 
-import { Line } from "@modwatch/types";
-
-export default class ModwatchFile extends Component<{
-  lines: string[];
-  complexLines: boolean;
-  showDescriptor: boolean;
-  filetype?: string;
-  filter: string;
-  showInactiveMods: boolean;
-}> {
-  render() {
-    const {
-      lines = [],
-      complexLines = false,
-      showDescriptor = false,
-      filetype,
-      filter = "",
-      showInactiveMods = false
-    } = this.props;
-    return (
-      <div>
-        <ul>
-          {(!complexLines
-            ? lines.map((line, index) =>
-                stringToSimpleLine(
-                  line,
-                  index,
-                  filetype,
-                  filter.toLowerCase(),
-                  showInactiveMods
-                )
+/**
+ * @param {Object} props
+ * @param {string[]} props.lines
+ * @param {boolean} props.complexLines
+ * @param {boolean} props.showDescriptor
+ * @param {string} [props.filetype]
+ * @param {string} props.filter
+ * @param {boolean} props.showInactiveMods
+ */
+function ModwatchFile({
+  lines = [],
+  complexLines = false,
+  showDescriptor = false,
+  filetype,
+  filter = "",
+  showInactiveMods = false
+}) {
+  return (
+    <div>
+      <ul>
+        {(!complexLines
+          ? lines.map((line, index) =>
+              stringToSimpleLine(
+                line,
+                index,
+                filetype,
+                filter.toLowerCase(),
+                showInactiveMods
               )
-            : lines.map((line, index) =>
-                stringToComplexLine(line, index, filter.toLowerCase())
-              )
-          ).map(
-            line =>
-              !line.hide && (
-                <li
-                  class={`modlist-item ${
-                    line.descriptor ? line.descriptor : ""
-                  } ${line.type ? line.type : ""}`}
-                >
-                  <span class="modlist-item-index unselectable">
-                    {line.index}.
-                  </span>
-                  <span class="modlist-item-content">
-                    {line.content.map(chunk => (
-                      <span class={chunk.class}>{chunk.display}</span>
-                    ))}
-                  </span>
-                  <span class="modlist-item-descriptor">
-                    {showDescriptor && line.descriptor !== "comment"
-                      ? line.descriptor
-                      : ""}
-                  </span>
-                </li>
-              )
-          )}
-        </ul>
-      </div>
-    );
-  }
+            )
+          : lines.map((line, index) =>
+              stringToComplexLine(line, index, filter.toLowerCase())
+            )
+        ).map(
+          line =>
+            !line.hide && (
+              <li
+                class={`modlist-item ${
+                  line.descriptor ? line.descriptor : ""
+                } ${line.type ? line.type : ""}`}
+              >
+                <span className="modlist-item-index unselectable">
+                  {line.index}.
+                </span>
+                <span className="modlist-item-content">
+                  {line.content.map(chunk => (
+                    <span class={chunk.class}>{chunk.display}</span>
+                  ))}
+                </span>
+                <span className="modlist-item-descriptor">
+                  {showDescriptor && line.descriptor !== "comment"
+                    ? line.descriptor
+                    : ""}
+                </span>
+              </li>
+            )
+        )}
+      </ul>
+    </div>
+  );
 }
 
 const typeMap = {
@@ -82,13 +80,21 @@ const modlistMap = {
   "-": "disabled"
 };
 
-function stringToSimpleLine(
-  originalLine: string,
-  index: number,
-  filetype: string,
-  filter: string,
-  showInactiveMods: boolean
-): Line {
+/**
+ * @param {string} originalLine
+ * @param {number} index
+ * @param {string} filetype
+ * @param {string} filter
+ * @param {boolean} showInactiveMods
+ * @returns {Line}
+ */
+export function stringToSimpleLine(
+  originalLine,
+  index,
+  filetype,
+  filter,
+  showInactiveMods
+) {
   const hide =
     (filter === "" ? false : !originalLine.toLowerCase().includes(filter)) ||
     (filetype === "modlist" && !showInactiveMods && originalLine[0] === "-");
@@ -112,11 +118,17 @@ function stringToSimpleLine(
       };
 }
 
-function stringToComplexLine(
-  originalLine: string,
-  index: number,
-  filter: string
-): Line {
+/**
+ * @param {string} originalLine
+ * @param {number} index
+ * @param {string} filter
+ * @returns {Line}
+ */
+export function stringToComplexLine(
+  originalLine,
+  index,
+  filter
+) {
   const hide =
     filter === ""
       ? false
@@ -178,3 +190,5 @@ function stringToComplexLine(
     };
   }
 }
+
+export default ModwatchFile;

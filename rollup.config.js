@@ -1,18 +1,18 @@
+//@ts-check
 import path from "path";
-import { readFile } from "fs";
-import { promisify } from "util";
+import { readFileSync } from "fs";
 import postcss from "rollup-plugin-postcss";
 import postcssNesting from "postcss-nesting";
 import postcssCustomProperties from "postcss-custom-properties";
 import postcssURL from "postcss-url";
-import nodeResolve from "rollup-plugin-node-resolve";
-import commonjs from "rollup-plugin-commonjs";
-import replace from "rollup-plugin-re";
-import sucrase from "rollup-plugin-sucrase";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import esbuild from "rollup-plugin-esbuild";
+import cssnano from "cssnano";
+import visualizer from "rollup-plugin-visualizer";
+import serve from "rollup-plugin-serve";
 
-const localPkg = require("./package.json");
-
-const readFileAsync = promisify(readFile);
+const localPkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 
 const env = {
   API_ENV: process.env.API_ENV,
@@ -20,7 +20,7 @@ const env = {
 };
 
 export default async () => ({
-  input: "src/index.tsx",
+  input: "src/index.jsx",
   output: {
     sourcemap: env.NODE_ENV !== "production" ? "inline" : true,
     exports: "named",
@@ -33,7 +33,6 @@ export default async () => ({
   context: null,
   moduleContext: null,
   treeshake: env.NODE_ENV === "production",
-  experimentalOptimizeChunks: env.NODE_ENV === "production",
   watch: {
     clearScreen: false
   },
@@ -41,34 +40,21 @@ export default async () => ({
     nodeResolve({
       extensions: ['.mjs', '.js', '.jsx', '.json', ".ts", ".tsx"]
     }),
-    replace({
-      replaces: {
+    commonjs({
+      sourceMap: env.NODE_ENV === "production"
+    }),
+    esbuild({
+      include: ["./src/*/*.js+(|x)", "./src/**/*.js+(|x)"],
+      exclude: "node_modules/**",
+      jsxFactory: 'h',
+      define: {
         "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV),
         "process.env.VERSION": JSON.stringify(localPkg.version),
         "process.env.API_URL":
           env.API_ENV === "production" || env.NODE_ENV === "production"
             ? JSON.stringify("https://api.modwat.ch")
             : JSON.stringify("http://localhost:3001")
-      },
-      patterns: (env.NODE_ENV !== "production" ? [{
-        test: /(.*)\s*\/\/\/PROD_ONLY/g,
-        replace: "// $1 // removed at build time"
-      }] : [{
-        test: /(.*)\s*\/\/\/DEV_ONLY/g,
-        replace: "// $1 // removed at build time"
-      }])
-    }),
-    commonjs({
-      sourceMap: env.NODE_ENV === "production"
-    }),
-    sucrase({
-      include: ["./src/*/*.ts+(|x)", "./src/**/*.ts+(|x)"],
-      exclude: "node_modules/**",
-      transforms: [
-        "jsx",
-        "typescript"
-      ],
-      jsxPragma: "h"
+      }
     }),
     postcss({
       include: ["./src/*.css", "./src/**/*.css"],
@@ -87,25 +73,24 @@ export default async () => ({
         postcssURL({
           url: "inline"
         })
-      ].concat(env.NODE_ENV !== "production" ? [] : [require("cssnano")()])
+      ].concat(env.NODE_ENV !== "production" ? [] : [cssnano()])
     })
   ].concat(
     env.NODE_ENV === "production"
       ? [
-          require("rollup-plugin-terser").terser({
-            ecma: 6,
-            compress: true,
-            mangle: true,
-            toplevel: true,
-            sourcemap: true
-          }),
-          require("rollup-plugin-visualizer")({
+        visualizer({
             filename: `./node_modules/.visualizer/index.html`,
             title: `Modwatch Dependency Graph`,
-            bundlesRelative: true,
             template: "treemap"
           })
         ]
       : []
-  )
+  ).concat(process.env.ROLLUP_WATCH ? [
+    serve({
+      contentBase: "public",
+      port: 5000,
+      verbose: false,
+      historyApiFallback: true,
+    })
+  ] : [])
 });

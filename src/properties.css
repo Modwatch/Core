@@ -1,30 +1,30 @@
 /* generated */
 :root {
-  --menu-offset: 20px;
-  --button-offset: 10px;
   --anim-delay: 150ms;
-  --icon-size: 48px;
-  --icon-subsize: 30px;
-  --color-primary: #d58717;
-  --color-icon: #000000;
-  --color-text: #000000;
-  --color-text-header: #d0d0d0;
-  --color-border: #a5a5a5;
+  --button-offset: 10px;
   --color-background: #333333;
   --color-background-2: #d3d3d3;
+  --color-border: #a5a5a5;
+  --color-comment: rgba(0, 0, 0, 0.5);
+  --color-disabled: rgba(140, 0, 0, 0.25);
+  --color-enabled: rgba(0, 140, 0, 0.25);
+  --color-error: #e45649;
+  --color-esl: rgba(64, 120, 242, 0.3);
   --color-esm: rgba(140, 140, 0, 0.35);
   --color-esp: rgba(0, 140, 0, 0.25);
-  --color-esl: rgba(64, 120, 242, 0.3);
-  --color-enabled: rgba(0, 140, 0, 0.25);
-  --color-disabled: rgba(140, 0, 0, 0.25);
-  --color-unmanaged: rgba(140, 140, 0, 0.35);
-  --color-setting-key: #e45649;
-  --color-error: #e45649;
-  --color-comment: rgba(0, 0, 0, 0.5);
-  --color-section: #4078f2;
+  --color-icon: #000000;
   --color-links: #d58717;
+  --color-primary: #d58717;
+  --color-section: #4078f2;
+  --color-setting-key: #e45649;
+  --color-text: #000000;
+  --color-text-header: #d0d0d0;
+  --color-unmanaged: rgba(140, 140, 0, 0.35);
+  --icon-size: 48px;
+  --icon-subsize: 30px;
+  --menu-offset: 20px;
   --nav-scale: 100px;
+  --responsive-cutoff: 768px;
   --z-index-nav: 11;
   --z-index-nav-toggle: 10;
-  --responsive-cutoff: 768px;
 }

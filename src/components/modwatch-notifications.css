@@ -15,7 +15,7 @@
     padding: 7px 10px;
     margin: 5px 0;
     opacity: 1;
-    transition: opacity var(--anim-delay) ease;
+    transition: opacity var(--anim-delay) ease, transform var(--anim-delay) ease;
     background-color: rgba(0, 0, 0, 0.2);
     cursor: pointer;
     &.error: {
@@ -25,7 +25,6 @@
     &.removing {
       opacity: 0.01;
     }
-    ,
     &.soft-delete {
       display: none;
       z-index: -1;

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFactoryFragment": "Fragment",
+    "types": ["preact"],
+    "allowJs": true,
+    "checkJs": true
+  }
+}

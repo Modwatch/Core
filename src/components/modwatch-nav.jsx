@@ -1,31 +1,23 @@
-import { h, Component } from "preact";
+//@ts-check
+import { h } from "preact";
+import { useState } from "preact/hooks";
 
-export default class ModwatchNav extends Component<
-  {},
-  {
-    show: boolean;
-  }
-> {
-  state = {
-    show: false
-  };
-  toggleShow = () => {
-    this.setState(({ show }) => ({
-      show: !show
-    }));
-  };
-  render() {
-    return (
-      <div class="menu-wrapper">
-        <div class="menu-toggle" onClick={this.toggleShow} />
-        <nav
-          onClick={this.toggleShow}
-          class={this.state.show ? "menu-main menu-active" : "menu-main"}
-        >
-          {this.props.children}
-          <span class="nav-block">Close</span>
-        </nav>
-      </div>
-    );
-  }
+function ModwatchNav({
+  children
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="menu-wrapper">
+      <div role="button" name="menu-toggle" className="menu-toggle" onClick={() => setShow(!show)} />
+      <nav
+        onClick={() => setShow(!show)}
+        class={show ? "menu-main menu-active" : "menu-main"}
+      >
+        {children}
+        <span className="nav-block">Close</span>
+      </nav>
+    </div>
+  );
 }
+
+export default ModwatchNav;

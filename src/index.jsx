@@ -1,6 +1,10 @@
-import { h, Component, render } from "preact";
+//@ts-check
+/** @typedef {import("@modwatch/types").Notification} Notification */
+/** @typedef {import("./types").GlobalState} GlobalState */
 
-import { modlists, modlist } from "./__helpers__/mocks";
+import { h, render } from "preact";
+
+import { users, plugins, modlist, ini, prefsini } from "./__helpers__/mocks";
 
 import "./global.css";
 
@@ -13,94 +17,87 @@ import ModwatchNav from "./components/modwatch-nav";
 import "./components/modwatch-notifications.css";
 import { ModwatchNotifications } from "./components/modwatch-notifications";
 
-import { addNotification, removeNotification } from "./store/index";
+import { NotificationProvider, useNotificationContext } from "./context/useNotifications";
 
-import * as types from "@modwatch/types";
-
-class Root extends Component<
-  {},
-  {
-    notifications: types.Notification[];
-  }
-> {
-  state = {
-    notifications: []
-  };
-  notify = message => {
-    this.setState(state => addNotification(state, message));
-  };
-  removeNotification = _id => {
-    this.setState(state => removeNotification(state, _id));
-  };
-  render() {
-    return (
-      <div>
-        <ModwatchNotifications
-          notifications={this.state.notifications}
-          removeNotification={this.removeNotification}
-        />
-        <header>
-          <h1 class="header">
-            <a class="no-underline" href="/">
-              MODWATCH
-            </a>
-          </h1>
-        </header>
-        <ModwatchNav>
-          <span class="nav-block" onClick={e => this.notify("Home")}>
-            Home
-          </span>
-          <span class="nav-block" onClick={e => this.notify("Modlists")}>
-            Modlists
-          </span>
-          <span class="nav-block" onClick={e => this.notify("Profile")}>
-            Profile
-          </span>
-        </ModwatchNav>
-        <div class="content-wrapper">
-          <div class="view-wrapper">
-            <section>
-              <h2>This is a component library for Modwatch</h2>
-              <p>
-                These components can be shared between any modwatch-related
-                apps. Notifications, modwatch file view, corner nav, etc. To
-                test notifications, you can{" "}
-                <a onClick={e => this.notify("A message!")}>click here</a> to
-                push a new one. They should disappear after a few seconds, or on
-                click.
-              </p>
-            </section>
-            <section>
-              <h2>Example Modwatch List</h2>
-              <ModwatchModlists
-                getModlists={async () => await modlists}
-                searchModlists={async () => await modlists}
-                Link={({ children, href }) => (
-                  <a onClick={e => this.notify(href)}>{children}</a>
-                )}
-              />
-            </section>
-            <section>
-              <h2>Example Modlist</h2>
-              {["plugins", "modlist", "ini", "prefsini"].map(filetype => (
-                <div>
-                  <h3>{filetype}</h3>
-                  <ModwatchFile
-                    lines={modlist[filetype]}
-                    filetype={filetype}
-                    complexLines={filetype.includes("ini")}
-                    showDescriptor={filetype === "plugins"}
-                    filter=""
-                    showInactiveMods={true}
-                  />
-                </div>
-              ))}
-            </section>
-          </div>
+const Root = () => {
+  const { addNotification } = useNotificationContext();
+  return (
+    <div>
+      <ModwatchNotifications />
+      <header>
+        <h1 className="header">
+          <a className="no-underline" href="/">
+            MODWATCH
+          </a>
+        </h1>
+      </header>
+      {/* @ts-ignore */}
+      <ModwatchNav>
+        <span className="nav-block" onClick={e => addNotification("Home")}>
+          Home
+        </span>
+        <span className="nav-block" onClick={e => addNotification("Modlists")}>
+          Modlists
+        </span>
+        <span className="nav-block" onClick={e => addNotification("Profile")}>
+          Profile
+        </span>
+      </ModwatchNav>
+      <div className="content-wrapper">
+        <div className="view-wrapper">
+          <section>
+            <h2>This is a component library for Modwatch</h2>
+            <p>
+              These components can be shared between any modwatch-related
+              apps. Notifications, modwatch file view, corner nav, etc. To
+              test notifications, you can{" "}
+              <a onClick={e => addNotification("A message!", { delay: -1 })}>click here</a> to
+              push a new one. They should disappear after a few seconds, or on
+              click.
+            </p>
+          </section>
+          <section>
+            <h2>Example Modwatch List</h2>
+            <ModwatchModlists
+              getModlists={async () => await users}
+              searchModlists={async ({ filter }) => {
+                const u = await users;
+                const lowerFilter = filter.toLowerCase();
+                return u.filter(({ username }) =>
+                  username.toLowerCase().includes(lowerFilter)
+                );
+              }}
+              Link={({ children, href }) => (
+                <a onClick={e => addNotification(href)}>{children}</a>
+              )}
+            />
+          </section>
+          <section>
+            <h2>Example Modlist</h2>
+            {[["plugins", plugins], ["modlist", modlist], ["ini", ini], ["prefsini", prefsini]].map(([filetype, lines]) => (
+              <div>
+                <h3>{filetype}</h3>
+                <ModwatchFile
+                  lines={lines}
+                  filetype={filetype}
+                  complexLines={filetype.includes("ini")}
+                  showDescriptor={filetype === "plugins"}
+                  filter=""
+                  showInactiveMods={true}
+                />
+              </div>
+            ))}
+          </section>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-render(<Root />, document.getElementById("modwatch-app"));
+render(
+  <NotificationProvider>
+    {/* @ts-ignore */}
+    <Root />
+  </NotificationProvider>,
+  document.getElementById("modwatch-app")
+);

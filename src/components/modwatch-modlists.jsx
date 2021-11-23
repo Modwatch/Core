@@ -1,125 +1,113 @@
-import { h, Component } from "preact";
+//@ts-check
+/** @typedef {import("../types").PrettyModlist} PrettyModlist */
+/** @typedef {import("../types").ModlistsState} State */
+/** @typedef {import("@modwatch/types").Modlist} Modlist */
+/** @typedef {import("preact").ComponentType} ComponentType */
 
-import { Modlist } from "@modwatch/types";
+import { h } from "preact";
+import { useState, useRef, useEffect } from "preact/hooks";
 
-type PrettyModlist = Partial<Modlist> & {
-  encodedUsername: string;
-  displayTimestamp: string;
+export const gameMap = {
+  skyrim: "Skyrim Classic",
+  skyrimse: "Skryim SE",
+  fallout4: "Fallout 4"
 };
-type State = {
-  modlists: PrettyModlist[];
-  gameMap: {
-    [key: string]: string;
-  };
-  debounceFilter?: number;
-  filter: string;
-};
+export const defaultDebounceRate = 150;
 
-export default class ModwatchModlists extends Component<
-  {
-    getModlists(): Promise<Partial<Modlist>[]>;
-    searchModlists({ filter: string }): Promise<Partial<Modlist>[]>;
-    Link: preact.ComponentType<{ href: string; [key: string]: any }>;
-  },
-  State
-> {
-  state: State = {
-    modlists: [],
-    gameMap: {
-      skyrim: "Skyrim Classic",
-      skyrimse: "Skryim SE",
-      fallout4: "Fallout 4"
-    },
-    debounceFilter: undefined,
-    filter: ""
-  };
-  componentDidMount = async () => {
-    const modlists = await this.props.getModlists();
-    this.setState(() => ({
-      modlists: prettifyModlists(modlists)
-    }));
-  };
-  search = (filter = "", debounce = 150) => {
-    clearTimeout(this.state.debounceFilter);
-    this.setState(() => ({
-      filter,
-      debounceFilter: window.setTimeout(async () => {
-        if (filter === "") {
-          const modlists = await this.props.getModlists();
-          this.setState(() => ({
-            modlists: prettifyModlists(modlists)
-          }));
-          return;
-        }
-        const modlists = await this.props.searchModlists({ filter });
-        this.setState(() => ({
-          modlists: prettifyModlists(modlists)
-        }));
-      }, debounce)
-    }));
-  };
-  clear = () => {
-    this.setState(() => ({
-      filter: ""
-    }));
-    this.search(undefined, 0);
-  };
-  render() {
-    return (
-      <div>
-        <form>
-          <label for="modlists-search" class="sr-only">
-            Search
-          </label>
-          <input
-            type="text"
-            placeholder="Search"
-            id="modlists-search"
-            value={this.state.filter}
-            onInput={e => this.search((e.target as HTMLInputElement).value)}
-          />
-          <button type="button" onClick={this.clear}>
-            Clear
-          </button>
-        </form>
-        <table class="modlist-table">
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Game</th>
-              <th class="responsive-hide">Timestamp</th>
-            </tr>
-          </thead>
-          {this.state.modlists.map(
-            ({ username, encodedUsername, game, displayTimestamp }) => (
-              <tr>
-                <td>
-                  <this.props.Link href={`/u/${encodedUsername}`}>
-                    {username}
-                  </this.props.Link>
-                </td>
-                <td>{this.state.gameMap[game]}</td>
-                <td class="responsive-hide">{displayTimestamp}</td>
-              </tr>
-            )
-          )}
-        </table>
-      </div>
-    );
-  }
-}
+/**
+ * @param {Object} props
+ * @param {number} props.debounceRate
+ * @param {() => Promise<Partial<Modlist>[]>} props.getModlists
+ * @param {({ filter: string }) => Promise<Partial<Modlist>[]>} props.searchModlists
+ * @param {ComponentType<{ href: string; [key: string]: any }>} props.Link
+ * @component
+ */
+function ModwatchModlists({
+  debounceRate = defaultDebounceRate,
+  getModlists,
+  searchModlists,
+  Link
+}) {
+  const [modlists, setModlists] = useState([]);
+  const [filteredModlists, setFilteredModlists] = useState(null);
+  const [filter, setFilter] = useState("");
+  const debounceFilter = useRef();
+  
+  useEffect(() => {
+    const populateModlist = async () => {
+      const modlists = await getModlists();
+      setModlists(prettifyModlists(modlists));
+    };
+    populateModlist();
+  }, []);
 
-function prettifyModlists(modlists: Partial<Modlist>[]): PrettyModlist[] {
-  let t;
-  return modlists.map(
-    m => (
-      (t = new Date(m.timestamp)),
-      {
-        ...m,
-        game: m.game || "skyrim",
-        encodedUsername: encodeURIComponent(m.username),
-        displayTimestamp: t.toLocaleString()
+  useEffect(() => {
+    clearTimeout(debounceFilter.current);
+    debounceFilter.current = setTimeout(async () => {
+      if (filter !== "") {
+        setFilteredModlists(prettifyModlists(await searchModlists({ filter })))
+      } else {
+        setFilteredModlists(null);
       }
-    )
+    }, debounceRate);
+  }, [filter]);
+
+  return (
+    <div>
+      <form>
+        <label for="modlists-search" className="sr-only">
+          Search
+        </label>
+        <input
+          type="text"
+          placeholder="Search"
+          id="modlists-search"
+          value={filter}
+          // @ts-ignore
+          onInput={e => setFilter(e.target.value)}
+        />
+        <button type="button" onClick={() => setFilter("")}>
+          Clear
+        </button>
+      </form>
+      <table className="modlist-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Game</th>
+            <th className="responsive-hide">Timestamp</th>
+          </tr>
+        </thead>
+        {(filteredModlists || modlists).map(
+          ({ username, encodedUsername, game, displayTimestamp }) => (
+            <tr>
+              <td>
+                <Link href={`/u/${encodedUsername}`}>
+                  {username}
+                </Link>
+              </td>
+              <td>{gameMap[game]}</td>
+              <td className="responsive-hide">{displayTimestamp}</td>
+            </tr>
+          )
+        )}
+      </table>
+    </div>
   );
 }
+
+/**
+ * 
+ * @param {Partial<Modlist>[]} modlists 
+ * @returns {PrettyModlist[]}
+ */
+export function prettifyModlists(modlists) {
+  return modlists.map(m => ({
+    ...m,
+    game: m.game || "skyrim",
+    encodedUsername: encodeURIComponent(m.username),
+    displayTimestamp: new Date(m.timestamp).toLocaleString()
+  }));
+}
+
+export default ModwatchModlists;

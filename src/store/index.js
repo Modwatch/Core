@@ -1,58 +1,81 @@
-import { Notification } from "@modwatch/types";
+//@ts-check
+/** @typedef {import("../types").GlobalState} GlobalState */
+/** @typedef {import("../types").NotificationOptions} NotificationOptions */
+/** @typedef {import("@modwatch/types").Notification} Notification */
 
-type GlobalState = {
-  [key: string]: any;
-  notifications: Notification[];
-};
+export const defaultType = "info";
+export const defaultDelay = 5000;
+export const defaultRemovalDelay = 300;
 
+let indexIdentifier = 0;
+
+/**
+ * @param {GlobalState} state
+ * @param {string} message
+ * @param {NotificationOptions} [notificationOptions]
+ * @returns {GlobalState}
+ */
 export function addNotification(
-  state: GlobalState,
-  message: string,
+  state,
+  message,
   {
-    type = "info",
-    delay = 5000,
-    removalDelay = 300
-  }: {
-    type?: string;
-    delay?: number;
-    removalDelay?: number;
+    type = defaultType,
+    delay = defaultDelay,
+    removalDelay = defaultRemovalDelay
   } = {}
 ) {
-  const _id = `${new Date().getTime()}`;
+  if (!message) {
+    throw new Error("message is required for notifications")
+  }
+  const _id = `${indexIdentifier++}`;
   return {
     ...state,
-    notifications: state.notifications.concat({
-      message,
-      removalDelay,
-      delay,
-      _id,
-      type,
-      softDelete: false
-    })
+    notifications: [
+      ...state.notifications,
+      {
+        message,
+        removalDelay,
+        delay,
+        _id,
+        type,
+        softDelete: false
+      }
+    ]
   };
 }
 
-export function removeNotification(state: GlobalState, _id: string) {
-  const onlyActiveIndex = state.notifications
-    .map(({ softDelete }) => softDelete)
-    .indexOf(false);
-  if (onlyActiveIndex === 0 && state.notifications[0]._id === _id) {
+/**
+ * @param {GlobalState} state
+ * @param {string} _id
+ * @returns {GlobalState}
+ */
+export function removeNotification(state, _id) {
+  const [index, numberOfActive] = state.notifications
+    .reduce(([foundIndex, numberOfActive], n, index) => {
+      if (_id === n._id && !n.softDelete) {
+        return [index, numberOfActive + 1];
+      } else {
+        return [foundIndex, !n.softDelete ? numberOfActive + 1 : numberOfActive];
+      }
+    }, [-1, 0]);
+  if (numberOfActive === 1 && index !== -1) {
+    indexIdentifier = 0;
     return {
       ...state,
       notifications: []
     };
   }
-  const index = state.notifications.map(({ _id }) => _id).indexOf(_id);
   if (index !== -1) {
     return {
       ...state,
-      notifications: state.notifications
-        .slice(0, index)
-        .concat({
+      notifications: [
+        ...state.notifications.slice(0, index),
+        {
           ...state.notifications[index],
           softDelete: true
-        })
-        .concat(state.notifications.slice(index + 1))
+        },
+        ...state.notifications.slice(index + 1)
+      ]
     };
   }
   throw new Error(

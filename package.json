@@ -2,26 +2,24 @@
   "name": "@modwatch/core",
   "version": "0.1.0",
   "scripts": {
-    "prebuild": "rimraf public/dist/*",
     "build": "rollup -c --environment NODE_ENV:production",
     "watch": "rollup -cw --environment NODE_ENV:development,API_ENV:production",
-    "serve": "serve public",
-    "test": "sucrase-node node_modules/tape/bin/tape ./tests/**/*.ts | tap-min",
-    "test:watch": "watch 'npm run test' src tests -du",
-    "tsc": "tsc --noEmit",
-    "loadz0r": "node loadz0r/supermin.js",
-    "cssProperties": "sucrase-node cssPropertiesGen.ts",
-    "micro": "sucrase-node ./node_modules/micro-dev/bin/micro-dev ./micro.ts -p 3001",
-    "prettier": "prettier --write 'src/**/*.{js,jsx,css,ts,tsx}'",
-    "gitaddsrc": "git add src",
+    "test": "ava",
+    "loadz0r": "esbuild --minify loadz0r/loader.js --outfile=loadz0r/loader.min.js",
+    "cssProperties": "node cssPropertiesGen.mjs",
+    "micro": "micro-dev ./micro.js -p 3001",
     "prepublish": "run-p loadz0r cssProperties"
   },
-  "precommit": [
-    "prepublish",
-    "prettier",
-    "build",
-    "gitaddsrc"
-  ],
+  "ava": {
+    "require": [
+      "esbuild-register",
+      "global-jsdom/register"
+    ],
+    "extensions": [
+      "js",
+      "jsx"
+    ]
+  },
   "files": [
     "src",
     "loadz0r",
@@ -31,41 +29,27 @@
   ],
   "main": "micro.js",
   "dependencies": {
-    "jwt-decode": "^2.2.0",
-    "preact": "^10.1.1",
-    "preact-async-route": "^2.2.1",
-    "preact-router": "^3.1.0",
-    "promiscuous": "^0.7.2",
-    "unfetch": "^4.1.0",
-    "unistore": "^3.5.1"
+    "preact": "^10.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "@istanbuljs/nyc-config-typescript": "^0.1.3",
     "@modwatch/types": "^0.3.0",
-    "@surma/rollup-plugin-off-main-thread": "^1.1.1",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@testing-library/preact": "^2.0.1",
+    "@testing-library/react": "^12.1.2",
+    "ava": "^3.15.0",
+    "esbuild": "^0.13.15",
+    "esbuild-register": "^3.1.2",
+    "global-jsdom": "^8.3.0",
+    "jsdom": "^18.1.1",
     "npm-run-all": "^4.1.5",
     "postcss-custom-properties": "^9.0.2",
     "postcss-nesting": "^7.0.1",
     "postcss-url": "^8.0.0",
-    "pre-commit": "^1.2.2",
-    "prettier": "^1.19.1",
-    "proxyquire": "^2.1.3",
-    "rimraf": "^3.0.0",
-    "rollup": "^1.27.13",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup": "^2.60.0",
+    "rollup-plugin-esbuild": "^4.7.2",
     "rollup-plugin-postcss": "^2.0.3",
-    "rollup-plugin-re": "^1.0.7",
-    "rollup-plugin-sucrase": "^2.1.0",
-    "rollup-plugin-terser": "^5.1.3",
-    "rollup-plugin-visualizer": "^2.7.2",
-    "sucrase": "^3.10.1",
-    "tap-min": "^2.0.0",
-    "tape": "^4.12.0",
-    "tape-watch": "^2.3.0",
-    "tslib": "^1.10.0",
-    "typescript": "^3.7.3",
-    "watch": "^1.0.2"
+    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-visualizer": "^5.5.2"
   }
 }
