@@ -29,7 +29,10 @@
     "!loadz0r/loader.js",
     "README.md"
   ],
-  "main": "micro.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "main": "index.js",
   "dependencies": {
     "jwt-decode": "^2.2.0",
     "preact": "^10.1.1",
